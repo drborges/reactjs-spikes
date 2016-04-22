@@ -15,8 +15,10 @@ class App extends React.Component {
     return (
       <div>
         <div>{this.props.greeting}</div>
-        <input type="text" onChange={this.update.bind(this)} />
-        <h1>{this.state.input}</h1>
+        <MirroredLabel value={this.state.input} update={this.update.bind(this)} />
+        <MirroredLabel value={this.state.input} update={this.update.bind(this)} />
+        <MirroredLabel value={this.state.input} update={this.update.bind(this)} />
+        <MirroredLabel value={this.state.input} update={this.update.bind(this)} />
       </div>
     )
   }
@@ -28,6 +30,15 @@ App.propTypes = {
 
 App.defaultProps = {
   greeting: 'Hello World!'
+}
+
+const MirroredLabel = (props) => {
+  return (
+    <div>
+      <input type="text" onChange={props.update} />
+      <h1>{props.value}</h1>
+    </div>
+  )
 }
 
 export default App
