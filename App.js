@@ -5,7 +5,6 @@ import Firebase from 'firebase';
 @FirebaseModel('/users')
 class App extends React.Component {
   render() {
-    console.log('rendering App')
     let rows = this.state.users.map((user, id) => {
       return <UserRow key={id} data={user} />
     })
@@ -38,11 +37,10 @@ function FirebaseModel(path) {
       }
 
       componentWillMount() {
-        console.log('Mounting Decorated')
         this.fref = new Firebase(`https://userxp.firebaseio.com${path}`)
 
         this.fref.on("child_added", function(dataSnapshot) {
-          this.state[this.key].push(dataSnapshot.val())
+          this.state[this.key][dataSnapshot.key()] = dataSnapshot.val()
           this.setState(this.state);
         }.bind(this));
       }
