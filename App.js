@@ -2,28 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Firebase from 'firebase';
 
+@FirebaseModel('/users')
 class App extends React.Component {
-
-  constructor() {
-    super()
-    this.state = {
-      users: []
-    }
-  }
-
-  componentWillMount() {
-    this.fref = new Firebase('https://userxp.firebaseio.com/users')
-    this.fref.on("child_added", function(dataSnapshot) {
-      this.state.users.push(dataSnapshot.val());
-      this.setState({
-        users: this.state.users
-      });
-    }.bind(this));
-  }
-
-  // components in ReactJS may have a 'ref' props attribute which is used
-  // to uniquely identify a component allowing it to be manipulated by ReactDOM
   render() {
+    console.log('rendering App')
     let rows = this.state.users.map((user, id) => {
       return <UserRow key={id} data={user} />
     })
@@ -39,9 +21,35 @@ class App extends React.Component {
 const UserRow = (props) => {
   return (
     <li>
-      <span>{props.data.name} ({props.data.level})</span>
+      <span>User: {props.data.name} ({props.data.level})</span>
     </li>
   )
 }
+
+function FirebaseModel(path) {
+  return function Decorator(Target) {
+    return class Decorated extends Target {
+
+      constructor() {
+        super()
+        this.key = path.slice(1)
+        this.state = {}
+        this.state[this.key] = []
+      }
+
+      componentWillMount() {
+        console.log('Mounting Decorated')
+        this.fref = new Firebase(`https://userxp.firebaseio.com${path}`)
+
+        this.fref.on("child_added", function(dataSnapshot) {
+          this.state[this.key].push(dataSnapshot.val())
+          this.setState(this.state);
+        }.bind(this));
+      }
+    }
+  }
+}
+
+
 
 export default App
