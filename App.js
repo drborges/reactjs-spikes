@@ -5,70 +5,36 @@ class App extends React.Component {
 
   constructor() {
     super()
-    this.state = { input: '' }
-    this.update = this.update.bind(this)
-  }
-
-  update(e) {
-    this.setState({
-      red: ReactDOM.findDOMNode(this.refs.red.refs.input).value,
-      green: ReactDOM.findDOMNode(this.refs.green.refs.input).value,
-      blue: ReactDOM.findDOMNode(this.refs.blue.refs.input).value
-    })
+    this.state = { users: [
+      { id: 1, name: "Borges", level: 5 },
+      { id: 2, name: "Ronaldo", level: 2 },
+      { id: 3, name: "Bianca", level: 3 },
+      { id: 4, name: "Hernando", level: 1 },
+      { id: 5, name: "Diego", level: 4 },
+    ]}
   }
 
   // components in ReactJS may have a 'ref' props attribute which is used
   // to uniquely identify a component allowing it to be manipulated by ReactDOM
   render() {
+    let rows = this.state.users.map(user => {
+      return <UserRow key={user.id} data={user} />
+    })
+
     return (
-      <div>
-        <div>{this.props.greeting}</div>
-        <br />
-        <Slider ref="red" update={this.update} />
-        <span>{this.state.red}</span>
-        <Slider ref="green" update={this.update} />
-        <span>{this.state.green}</span>
-        <Slider ref="blue" update={this.update} />
-        <span>{this.state.blue}</span>
-      </div>
+      <ul>
+        <UserRow data={{name: 'LOL', level: 0}} />
+        {rows}
+      </ul>
     )
   }
 }
 
-App.propTypes = {
-  greeting: React.PropTypes.string
-}
-
-App.defaultProps = {
-  greeting: 'Hello World!'
-}
-
-
-/*
- * Child component
- */
-class Slider extends React.Component {
-  render() {
-    return (
-      <div>
-        <input ref="input" type="range"
-             min="0"
-             max="255"
-             onChange={this.props.update} />
-      </div>
-    )
-  }
-}
-
-/*
- * Stateless component is nothing but a closure
- */
-const MirroredLabel = (props) => {
+const UserRow = (props) => {
   return (
-    <div>
-      <input type="text" onChange={props.update} />
-      <h1>{props.value}</h1>
-    </div>
+    <li>
+      <span>{props.data.name} ({props.data.level})</span>
+    </li>
   )
 }
 
